@@ -3,12 +3,17 @@ const fetchRecentTrack = require("../helpers/lastFm");
 
 const playingSong = createChannel();
 
-let lastTrack = ["not playing anything", null, null];
+let lastTrack = {
+  name: "not playing anything",
+  artist: "n/a",
+  image: "https://f4.bcbits.com/img/a3316669401_16.jpg",
+  isPlaying: false,
+};
 
 setInterval(async () => {
   let track = await fetchRecentTrack();
-  if (track.length && lastTrack[0] != track[0]) {
-    playingSong.broadcast(track, "track-changed");
+  if (Object.keys(track).length != 0 && track.name != lastTrack.name) {
+    playingSong.broadcast(track, "update");
     lastTrack = track;
   }
 }, 5000);
@@ -19,7 +24,7 @@ setInterval(async () => {
  */
 
 playingSong.on("session-registered", (session) => {
-  session.push([lastTrack, playingSong.sessionCount], "connected");
+  session.push(lastTrack, "update");
 
   playingSong.broadcast([playingSong.sessionCount], "count-updated", {
     filter: (broadcastSession) => {

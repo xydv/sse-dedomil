@@ -15,8 +15,17 @@ module.exports = async () => {
     let response = await fetch(url);
     let responseJson = await response.json();
     let track = await responseJson.recenttracks.track[0];
-    return [track.name, track.artist["#text"], track["@attr"] ? true : false];
+    let name = track.name;
+    let image = track.image[3]["#text"];
+    let artist = track.artist["#text"];
+    let isPlaying = track["@attr"] ? true : false;
+    return {
+      name,
+      image,
+      artist,
+      isPlaying,
+    };
   } catch (error) {
-    return [];
+    return {};
   }
 };
