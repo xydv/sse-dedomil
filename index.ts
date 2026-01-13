@@ -1,9 +1,12 @@
 import { createResponse } from "better-sse";
 import { Hono } from "hono";
+import { cors } from "hono/cors";
 import { playingSongChannel } from "./channels/playingSong";
 import { getRecentTracks } from "./helpers/getRecentTrack";
 
 const app = new Hono();
+
+app.use(cors());
 
 // background worker, maybe use bun workers in future
 async function createPolling() {
